@@ -13,3 +13,7 @@ brew install --cask offline-logi-options+
 ## Maintenance
 
 A daily workflow checks for upstream changes and opens a PR when updates are available.
+
+## Acknowledgments
+
+Based on work by [eternal-dissident](https://github.com/eternal-dissident/homebrew-tap).
