@@ -29,18 +29,20 @@ jobs:
         if: steps.check.outputs.changed == 'true'
         id: update
         run: |
-          new_hash=$(./scripts/update-logi-cask.sh '${{ steps.check.outputs.metadata }}')
-          echo "sha256=$new_hash" >> $GITHUB_OUTPUT
+          result=$(./scripts/update-logi-cask.sh '${{ steps.check.outputs.metadata }}')
+          echo "sha256=$(echo "$result" | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          echo "version=$(echo "$result" | cut -d' ' -f2)" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
         if: steps.check.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: "Update offline-logi-options+ SHA256 hash"
-          title: "Update offline-logi-options+ cask"
+          commit-message: "Update offline-logi-options+ to version ${{ steps.update.outputs.version }}"
+          title: "Update offline-logi-options+ to ${{ steps.update.outputs.version }}"
           body: |
             The Logi Options+ offline installer has been updated.
 
+            **New version:** `${{ steps.update.outputs.version }}`
             **New SHA256:** `${{ steps.update.outputs.sha256 }}`
 
             This PR was automatically generated.
