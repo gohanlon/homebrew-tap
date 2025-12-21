@@ -1,0 +1,48 @@
+name: Update logi-options-offline cask
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-and-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for updates
+        id: check
+        run: |
+          if metadata=$(./scripts/check-logi-update.sh); then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "metadata=$metadata" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update cask
+        if: steps.check.outputs.changed == 'true'
+        id: update
+        run: |
+          new_hash=$(./scripts/update-logi-cask.sh '${{ steps.check.outputs.metadata }}')
+          echo "sha256=$new_hash" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.check.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "Update logi-options-offline SHA256 hash"
+          title: "Update logi-options-offline cask"
+          body: |
+            The Logitech Options+ offline installer has been updated.
+
+            **New SHA256:** `${{ steps.update.outputs.sha256 }}`
+
+            This PR was automatically generated.
+          branch: auto-update/logi-options-offline
+          delete-branch: true
