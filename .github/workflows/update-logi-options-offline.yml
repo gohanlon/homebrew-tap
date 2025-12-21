@@ -1,0 +1,132 @@
+name: Update logi-options-offline cask
+
+on:
+  schedule:
+    # Run daily at 6:00 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  check-and-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for updates
+        id: check
+        run: |
+          DOWNLOAD_URL="https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer_offline.zip"
+          METADATA_FILE=".github/logi-options-offline-metadata.json"
+
+          # Fetch current headers
+          echo "Fetching headers from $DOWNLOAD_URL..."
+          HEADERS=$(curl -sI "$DOWNLOAD_URL" 2>/dev/null)
+
+          # Extract relevant headers (handle both HTTP/1.1 and HTTP/2)
+          ETAG=$(echo "$HEADERS" | grep -i '^etag:' | tail -1 | sed 's/etag: *//i' | tr -d '\r"')
+          LAST_MODIFIED=$(echo "$HEADERS" | grep -i '^last-modified:' | tail -1 | sed 's/last-modified: *//i' | tr -d '\r')
+          CONTENT_LENGTH=$(echo "$HEADERS" | grep -i '^content-length:' | tail -1 | sed 's/content-length: *//i' | tr -d '\r')
+
+          echo "Current ETag: $ETAG"
+          echo "Current Last-Modified: $LAST_MODIFIED"
+          echo "Current Content-Length: $CONTENT_LENGTH"
+
+          # Check if metadata file exists
+          if [ -f "$METADATA_FILE" ]; then
+            STORED_ETAG=$(jq -r '.etag // ""' "$METADATA_FILE")
+            STORED_LAST_MODIFIED=$(jq -r '.last_modified // ""' "$METADATA_FILE")
+            STORED_CONTENT_LENGTH=$(jq -r '.content_length // ""' "$METADATA_FILE")
+
+            echo "Stored ETag: $STORED_ETAG"
+            echo "Stored Last-Modified: $STORED_LAST_MODIFIED"
+            echo "Stored Content-Length: $STORED_CONTENT_LENGTH"
+
+            # Compare - file changed if ETag differs OR (Last-Modified AND Content-Length both differ)
+            if [ "$ETAG" = "$STORED_ETAG" ]; then
+              echo "No changes detected (ETag matches)"
+              echo "changed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            if [ "$LAST_MODIFIED" = "$STORED_LAST_MODIFIED" ] && [ "$CONTENT_LENGTH" = "$STORED_CONTENT_LENGTH" ]; then
+              echo "No changes detected (Last-Modified and Content-Length match)"
+              echo "changed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            echo "Changes detected!"
+          else
+            echo "No metadata file found, will create one"
+          fi
+
+          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "etag=$ETAG" >> $GITHUB_OUTPUT
+          echo "last_modified=$LAST_MODIFIED" >> $GITHUB_OUTPUT
+          echo "content_length=$CONTENT_LENGTH" >> $GITHUB_OUTPUT
+
+      - name: Download and compute new hash
+        if: steps.check.outputs.changed == 'true'
+        id: hash
+        run: |
+          DOWNLOAD_URL="https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer_offline.zip"
+
+          echo "Downloading installer (this may take a while)..."
+          curl -fSL -o /tmp/logi_installer.zip "$DOWNLOAD_URL"
+
+          echo "Computing SHA256 hash..."
+          NEW_HASH=$(sha256sum /tmp/logi_installer.zip | cut -d' ' -f1)
+          echo "New SHA256: $NEW_HASH"
+          echo "sha256=$NEW_HASH" >> $GITHUB_OUTPUT
+
+          # Clean up
+          rm -f /tmp/logi_installer.zip
+
+      - name: Update cask and metadata
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          NEW_HASH="${{ steps.hash.outputs.sha256 }}"
+          ETAG="${{ steps.check.outputs.etag }}"
+          LAST_MODIFIED="${{ steps.check.outputs.last_modified }}"
+          CONTENT_LENGTH="${{ steps.check.outputs.content_length }}"
+
+          # Update the cask file with new hash
+          sed -i "s/sha256 \"[a-f0-9]\{64\}\"/sha256 \"$NEW_HASH\"/" Casks/logi-options-offline.rb
+
+          # Update metadata file
+          cat > .github/logi-options-offline-metadata.json << EOF
+          {
+            "etag": "$ETAG",
+            "last_modified": "$LAST_MODIFIED",
+            "content_length": "$CONTENT_LENGTH",
+            "sha256": "$NEW_HASH",
+            "updated_at": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          }
+          EOF
+
+          echo "Updated cask SHA256 to: $NEW_HASH"
+
+      - name: Create Pull Request
+        if: steps.check.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update logi-options-offline SHA256 hash"
+          title: "Update logi-options-offline cask"
+          body: |
+            The Logitech Options+ offline installer has been updated.
+
+            **Changes detected:**
+            - New ETag: `${{ steps.check.outputs.etag }}`
+            - Last-Modified: `${{ steps.check.outputs.last_modified }}`
+            - Content-Length: `${{ steps.check.outputs.content_length }}` bytes
+
+            **New SHA256:** `${{ steps.hash.outputs.sha256 }}`
+
+            This PR was automatically generated by the update workflow.
+          branch: auto-update/logi-options-offline
+          delete-branch: true
