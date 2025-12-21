@@ -1,3 +1,4 @@
+# Based on https://github.com/eternal-dissident/homebrew-tap
 cask "offline-logi-options+" do
   version "1.96.781095"
   sha256 "fb6a3f87be76131b5a4cefc97cc978381cc6080949540c4455643130b6d53864"
