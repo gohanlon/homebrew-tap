@@ -12,7 +12,6 @@ cask "offline-logi-options+" do
     skip "Offline version"
   end
 
-  auto_updates true
   depends_on macos: ">= :catalina"
 
   installer script: {
