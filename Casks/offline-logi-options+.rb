@@ -1,10 +1,10 @@
-cask "logi-options-offline" do
+cask "offline-logi-options+" do
   version "1.96.781095"
   sha256 "fb6a3f87be76131b5a4cefc97cc978381cc6080949540c4455643130b6d53864"
 
   url "https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer_offline.zip"
-  name "Logi Options Offline"
-  desc "Offline software for Logitech devices"
+  name "Offline Logi Options+"
+  desc "Offline installer for Logi Options+"
   homepage "https://prosupport.logi.com/hc/en-us/articles/10991109278871-Logitech-Options-Offline-Installer"
 
   livecheck do

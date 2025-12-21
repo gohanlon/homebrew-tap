@@ -14,8 +14,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 DOWNLOAD_URL="https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer_offline.zip"
-CASK_FILE="$REPO_ROOT/Casks/logi-options-offline.rb"
-METADATA_FILE="$REPO_ROOT/.github/logi-options-offline-metadata.json"
+CASK_FILE="$REPO_ROOT/Casks/offline-logi-options+.rb"
+METADATA_FILE="$REPO_ROOT/.github/offline-logi-options+-metadata.json"
 
 download_and_hash() {
     local tmpfile
