@@ -8,7 +8,7 @@ brew install --cask offline-logi-options+
 
 ## Casks
 
-**offline-logi-options+** — Offline installer for Logi Options+. Useful when the standard cask fails due to network issues during installation.
+**offline-logi-options+** — Cask for Logitech's offline Logi Options+ installer. Installs a version that runs without phoning home—your devices shouldn't depend on Logi's service availability.
 
 ## Maintenance
 
