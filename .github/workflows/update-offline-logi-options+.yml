@@ -1,4 +1,4 @@
-name: Update logi-options-offline cask
+name: Update offline-logi-options+ cask
 
 on:
   schedule:
@@ -36,13 +36,13 @@ jobs:
         if: steps.check.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: "Update logi-options-offline SHA256 hash"
-          title: "Update logi-options-offline cask"
+          commit-message: "Update offline-logi-options+ SHA256 hash"
+          title: "Update offline-logi-options+ cask"
           body: |
-            The Logitech Options+ offline installer has been updated.
+            The Logi Options+ offline installer has been updated.
 
             **New SHA256:** `${{ steps.update.outputs.sha256 }}`
 
             This PR was automatically generated.
-          branch: auto-update/logi-options-offline
+          branch: auto-update/offline-logi-options+
           delete-branch: true

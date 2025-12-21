@@ -15,7 +15,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 DOWNLOAD_URL="https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer_offline.zip"
-METADATA_FILE="$REPO_ROOT/.github/logi-options-offline-metadata.json"
+METADATA_FILE="$REPO_ROOT/.github/offline-logi-options+-metadata.json"
 
 fetch_headers() {
     curl -sI "$DOWNLOAD_URL" 2>/dev/null

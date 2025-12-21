@@ -3,12 +3,12 @@
 ```
 brew uninstall --zap --cask logi-options+  # if previously installed
 brew tap gohanlon/tap
-brew install --cask logi-options-offline
+brew install --cask offline-logi-options+
 ```
 
 ## Casks
 
-**logi-options-offline** — Logitech Options+ offline installer. Useful when the standard cask fails due to network issues during installation.
+**offline-logi-options+** — Offline installer for Logi Options+. Useful when the standard cask fails due to network issues during installation.
 
 ## Maintenance
 
