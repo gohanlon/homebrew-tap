@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Update the logi-options-offline cask with a new SHA256 hash.
-# Downloads the installer, computes the hash, and updates both
-# the cask file and metadata file.
+# Update the offline-logi-options+ cask.
+# Downloads the installer, computes the hash, extracts the version,
+# and updates both the cask file and metadata file.
 #
-# Usage: update-logi-cask.sh [metadata_json]
-#
-# If metadata_json is provided (from check-logi-update.sh), it will be used
-# to update the metadata file. Otherwise, fresh headers will be fetched.
+# Usage: update-logi-cask.sh
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -92,12 +89,9 @@ EOF
 }
 
 main() {
-    local metadata_json="${1:-}"
-
-    if [[ -z "$metadata_json" ]]; then
-        echo "Fetching current metadata..." >&2
-        metadata_json=$(fetch_metadata)
-    fi
+    echo "Fetching current metadata..." >&2
+    local metadata_json
+    metadata_json=$(fetch_metadata)
 
     local info new_hash new_version
     info=$(download_and_extract_info)
@@ -107,7 +101,7 @@ main() {
     update_cask "$new_hash" "$new_version"
     update_metadata "$metadata_json" "$new_hash" "$new_version"
 
-    # Output both hash and version for the workflow
+    # Output hash and version for the workflow
     echo "$new_hash $new_version"
 }
 

@@ -18,9 +18,8 @@ jobs:
       - name: Check for updates
         id: check
         run: |
-          if metadata=$(./scripts/check-logi-update.sh); then
+          if ./scripts/check-logi-update.sh; then
             echo "changed=true" >> $GITHUB_OUTPUT
-            echo "metadata=$metadata" >> $GITHUB_OUTPUT
           else
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
@@ -29,7 +28,7 @@ jobs:
         if: steps.check.outputs.changed == 'true'
         id: update
         run: |
-          result=$(./scripts/update-logi-cask.sh '${{ steps.check.outputs.metadata }}')
+          result=$(./scripts/update-logi-cask.sh)
           echo "sha256=$(echo "$result" | cut -d' ' -f1)" >> $GITHUB_OUTPUT
           echo "version=$(echo "$result" | cut -d' ' -f2)" >> $GITHUB_OUTPUT
 

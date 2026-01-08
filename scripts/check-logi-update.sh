@@ -8,8 +8,6 @@ set -euo pipefail
 #   0 - Changes detected
 #   1 - No changes detected
 #   2 - Error (missing metadata file, network error, etc.)
-#
-# When changes are detected, outputs new metadata as JSON to stdout.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -81,19 +79,11 @@ main() {
         exit 1
     fi
 
-    # Changes detected - output new metadata
+    # Changes detected
     log "Result: Changes detected"
     log "  etag: $stored_etag -> $etag"
     log "  last-modified: $stored_last_modified -> $last_modified"
     log "  content-length: $stored_content_length -> $content_length"
-
-    cat <<EOF
-{
-  "etag": "$etag",
-  "last_modified": "$last_modified",
-  "content_length": "$content_length"
-}
-EOF
     exit 0
 }
 
