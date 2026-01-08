@@ -1,7 +1,7 @@
 # homebrew-tap
 
 ```
-brew uninstall --zap --cask logi-options+  # if previously installed
+brew uninstall --zap --cask logi-options+  # if cask previously installed
 brew tap gohanlon/tap
 brew install --cask offline-logi-options+
 ```
