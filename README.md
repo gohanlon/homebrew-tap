@@ -11,7 +11,7 @@ brew update && brew reinstall --cask offline-logi-options+
 
 ## Casks
 
-**offline-logi-options+** — Cask for Logitech's offline Logi Options+ installer. Installs a version that runs without phoning home—your devices shouldn't depend on Logi's service availability.
+**offline-logi-options+** — Logitech's [offline Options+ installer](https://prosupport.logi.com/hc/en-us/articles/10991109278871-Logitech-Options-Offline-Installer). Per Logitech, it doesn't send analytics and cloud features are disabled. Note: the offline version was [still affected](https://support.logi.com/hc/en-us/articles/37493733117847-Options-and-G-HUB-macOS-Certificate-Issue) by the January 2026 certificate incident.
 
 ## Maintenance
 
