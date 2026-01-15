@@ -4,6 +4,9 @@
 brew uninstall --zap --cask logi-options+  # if cask previously installed
 brew tap gohanlon/tap
 brew install --cask offline-logi-options+
+
+# to update
+brew update && brew reinstall --cask offline-logi-options+
 ```
 
 ## Casks
