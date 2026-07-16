@@ -12,7 +12,7 @@ cask "offline-logi-options+" do
     skip "Offline version"
   end
 
-  depends_on macos: ">= :catalina"
+  depends_on macos: :catalina
 
   installer script: {
     executable: "logioptionsplus_installer_offline.app/Contents/MacOS/logioptionsplus_installer",
