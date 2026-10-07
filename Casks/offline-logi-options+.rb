@@ -1,7 +1,7 @@
 # Based on https://github.com/eternal-dissident/homebrew-tap
 cask "offline-logi-options+" do
-  version "2.6.944893"
-  sha256 "133465fb8c7ef6bd34cc11df16f4ad6ee3066df773178cf269e321860d9cf20c"
+  version "2.8.981479"
+  sha256 "28d41efa231019b51f51fa54b650f4fe468c5d0a2869c38cfa622242690a826a"
 
   url "https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer_offline.zip"
   name "Offline Logi Options+"
